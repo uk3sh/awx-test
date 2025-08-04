@@ -1,0 +1,10 @@
+---
+- name: AWS Lambda Playbook
+  hosts: target
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Check if wp-cli is installed
+      command: wp --info
+      register: wpcli_check
+      ignore_errors: yes
