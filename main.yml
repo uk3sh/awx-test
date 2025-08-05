@@ -45,7 +45,6 @@
 
 
     - name: Unarchive a file that is already on the remote machine
-      ansible.builtin.unarchive:- name: Unarchive a file that is already on the remote machine
       ansible.builtin.unarchive:
         src: /tmp/downloads/wp-content.zip
         dest: /var/www/wordpress/wp-content
