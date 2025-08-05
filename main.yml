@@ -1,10 +1,113 @@
 ---
-- name: AWS Lambda Playbook
-  hosts: target
+- name: Download db.sql and contet.zip from S3
+  hosts: all
   become: yes
-  gather_facts: false
+  collections:
+    - amazon.aws
+
+  vars:
+    domain_name: alisonmd.pmpro.site
+    old_domain: malloryd25.sg-host.com
+    aws_region: us-east-2             # replace with your region
+    aws_access_key: ABCD   # replace with your AWS access key
+    aws_secret_key: EFGH   # replace with your AWS secret key
+    s3_bucket: pmpro-migration-bkp
+    s3_dest_dir: /tmp/downloads
+    s3_files:
+      - key: alisoncurfmanmd/database.sql
+        local_name: database.sql
+      - key: alisoncurfmanmd/wp-content.zip
+        local_name: wp-content.zip
+
   tasks:
-    - name: Check if wp-cli is installed
-      command: wp --info
-      register: wpcli_check
-      ignore_errors: yes
+    - name: Ensure destination directory exists
+      file:
+        path: "{{ s3_dest_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download files from S3
+      amazon.aws.aws_s3:
+        bucket: "{{ s3_bucket }}"
+        object: "{{ item.key }}"
+        dest: "{{ s3_dest_dir }}/{{ item.local_name }}"
+        mode: get
+      environment:
+        AWS_DEFAULT_REGION: "{{ aws_region }}"
+        AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+        AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+      loop: "{{ s3_files }}"
+      register: download_results
+
+    # - name: Display download status
+    #   debug:
+    #     var: download_results.results
+
+
+    - name: Unarchive a file that is already on the remote machine
+      ansible.builtin.unarchive:- name: Unarchive a file that is already on the remote machine
+      ansible.builtin.unarchive:
+        src: /tmp/downloads/wp-content.zip
+        dest: /var/www/wordpress/wp-content
+        remote_src: yes
+
+    - name: Import the database on target
+      command: wp db import "{{ s3_dest_dir }}/database.sql" --allow-root
+      args:
+        chdir: /var/www/wordpress
+
+    - name: Search & replace old URLs in database
+      command: >
+        wp search-replace
+          'http://{{ old_domain }}'
+          'http://{{ domain_name }}'
+          --allow-root
+          --skip-columns=guid
+      args:
+        chdir: /var/www/wordpress
+
+        #    - name: Update WP “home” option
+        #      shell: |
+        #        wp db query \
+        #          "UPDATE www_options \
+        #           SET option_value='http://{{ domain_name }}' \
+        #           WHERE option_name='home';" \
+        #          --allow-root
+        #      args:
+        #        chdir: /var/www/wordpress
+        #
+        #    - name: Update WP “siteurl” option
+        #      shell: |
+        #        wp db query \
+        #          "UPDATE www_options \
+        #           SET option_value='http://{{ domain_name }}' \
+        #           WHERE option_name='siteurl';" \
+        #          --allow-root
+        #      args:
+        #        chdir: /var/www/wordpress
+
+    - name: Flush WP internal object cache
+      command: wp cache flush --allow-root
+      args:
+        chdir: /var/www/wordpress
+
+    - name: Delete all WP transients
+      command: wp transient delete --all --allow-root
+      args:
+        chdir: /var/www/wordpress
+
+    - name: Set Apache ServerName to our domain
+      lineinfile:
+        path: /etc/apache2/sites-enabled/wordpress.conf
+        regexp: '^\s*ServerName'
+        line: "ServerName {{ domain_name }}"
+        backrefs: no
+
+    - name: Restart Apache to pick up new ServerName
+      service:
+        name: apache2
+        state: restarted
+
+    
+
+    
