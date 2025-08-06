@@ -50,6 +50,13 @@
         dest: /var/www/wordpress/wp-content
         remote_src: yes
 
+    - name: Update table_prefix in wp-config.php
+      ansible.builtin.lineinfile:
+        path: /var/www/wordpress/wp-config.php
+        regexp: '^\$table_prefix'
+        line: "$table_prefix = '{{ prod_table_prefix }}';"
+        backrefs: no
+
     - name: Import the database on target
       command: wp db import "{{ s3_dest_dir }}/database.sql" --allow-root
       args:
