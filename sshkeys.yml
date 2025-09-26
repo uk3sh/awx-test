@@ -1,0 +1,38 @@
+---
+- name: SSH Key Management
+  hosts: "{{ target_hosts | default('all') }}"
+  become: yes
+
+  tasks:
+    # Scenario 1: Append SSH key to user
+    - name: Add SSH key to user
+      authorized_key:
+        user: "{{ ssh_user }}"
+        key: "{{ ssh_key }}"
+        comment: "{{ key_comment | default('') }}"
+        state: present
+      when: mode == "append"
+
+    # Scenario 2: Update/replace specific key
+    - name: Remove old SSH key
+      authorized_key:
+        user: "{{ ssh_user }}"
+        key: "{{ old_key }}"
+        state: absent
+      when: mode == "update"
+
+    - name: Add new SSH key
+      authorized_key:
+        user: "{{ ssh_user }}"
+        key: "{{ ssh_key }}"
+        comment: "{{ key_comment | default('') }}"
+        state: present
+      when: mode == "update"
+
+    # Scenario 3: Delete specific key
+    - name: Delete SSH key
+      authorized_key:
+        user: "{{ ssh_user }}"
+        key: "{{ key_to_delete }}"
+        state: absent
+      when: mode == "delete"
