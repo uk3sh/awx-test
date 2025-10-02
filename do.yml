@@ -33,23 +33,23 @@
         timeout: 500
       register: my_droplet
 
-    - name: Tag a resource; creating the tag if it does not exist
-      community.digitalocean.digital_ocean_tag:
-        oauth_token: "{{ do_team_token }}"
-        resource_id: "{{ my_droplet.droplet.id }}"
-        name: pmpro-hosting-alpha
-        state: present
-
     - name: Show Droplet info
       ansible.builtin.debug:
         msg: |
-          Droplet ID is {{ my_droplet.droplet.id }}
-          IPv4 is {{ (my_droplet.droplet.networks.v4 | selectattr('type', 'equalto', 'public')).0.ip_address }}
+          Droplet ID is {{ my_droplet.data.droplet.id }}
+          IPv4 is {{ (my_droplet.data.droplet.networks.v4 | selectattr('type', 'equalto', 'public')).0.ip_address }}
 
-    - name: Create a record using api token
-      community.general.cloudflare_dns:
-        zone: pmpro.site
-        record: "{{ droplet_name }}"
-        type: A
-        value: "{{ (my_droplet.droplet.networks.v4 | selectattr('type', 'equalto', 'public')).0.ip_address }}"
-        api_token: "{{ CF_TOKEN }}"
+    # - name: Tag a resource; creating the tag if it does not exist
+    #   community.digitalocean.digital_ocean_tag:
+    #     oauth_token: "{{ do_team_token }}"
+    #     resource_id: "{{ my_droplet.droplet.id }}"
+    #     name: pmpro-hosting-alpha
+    #     state: present
+
+    # - name: Create a record using api token
+    #   community.general.cloudflare_dns:
+    #     zone: pmpro.site
+    #     record: "{{ droplet_name }}"
+    #     type: A
+    #     value: "{{ (my_droplet.droplet.networks.v4 | selectattr('type', 'equalto', 'public')).0.ip_address }}"
+    #     api_token: "{{ CF_TOKEN }}"
