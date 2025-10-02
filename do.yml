@@ -23,7 +23,7 @@
   tasks:
     - name: Create Droplet from Snapshot
       # Tell the module to use your team token via the env var
-      digitalocean.cloud.droplet:
+      community.digitalocean.digital_ocean_droplet:
         token: "{{ do_team_token }}"
         name: "{{ droplet_name }}"
         region: "{{ region }}"
