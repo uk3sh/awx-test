@@ -29,8 +29,15 @@
         region: "{{ region }}"
         size: "{{ size }}"
         image: "{{ snapshot_id }}"
+        ssh_keys: ['48536093']
         unique_name: true
         timeout: 500
+        user_data: |
+          # cloud-config
+          runcmd:
+            - [ sh, -c, "hostnamectl set-hostname {{ region }}" ]
+            - [ sh, -c, "wp db reset --yes --path=/var/www/html --allow-root || true" ]
+            - [ sh, -c, "wp core install --url=https://{{ droplet_name }} --title='{{ site_title }}' --admin_user='{{ admin_user }}' --admin_password='{{ admin_pass }}' --admin_email='{{ admin_email }}' --path='/var/www/html' --allow-root" ]
       register: my_droplet
 
     - name: Show Droplet info
