@@ -58,5 +58,6 @@
         zone: pmpro.site
         record: "{{ droplet_name }}"
         type: A
+        proxied: true
         value: "{{ (my_droplet.data.droplet.networks.v4 | selectattr('type', 'equalto', 'public')).0.ip_address }}"
         api_token: "{{ CF_TOKEN }}"
