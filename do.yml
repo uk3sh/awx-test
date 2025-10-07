@@ -71,7 +71,7 @@
         password: "{{ ses_passwd }}"
         secure: starttls
         to: "{{ admin_email }}"
-        from: "hello@pmpromailer.com"
+        from: "Notifications@pmpromailer.com"
         subject: "New server created!"
         body: |
           Hello,
