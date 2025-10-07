@@ -15,7 +15,7 @@
     size: s-2vcpu-4gb
 
     # The snapshot identifier (UUID or slug)
-    snapshot_id: "200915068"
+    snapshot_id: "202344250"
 
     # Point this at a token that has access to your target team
     do_team_token: "{{ DIGITALOCEAN_TOKEN }}"
@@ -32,8 +32,7 @@
         ssh_keys: ['48536093']
         unique_name: true
         timeout: 500
-        user_data: |
-          # cloud-config
+        user_data: |  
           runcmd:
             - [ sh, -c, "hostnamectl set-hostname {{ region }}" ]
             - [ sh, -c, "wp db reset --yes --path=/var/www/html --allow-root || true" ]
