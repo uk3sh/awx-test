@@ -61,3 +61,20 @@
         proxied: true
         value: "{{ (my_droplet.data.droplet.networks.v4 | selectattr('type', 'equalto', 'public')).0.ip_address }}"
         api_token: "{{ CF_TOKEN }}"
+
+    - name: Send provisioning email via SES SMTP
+      community.general.mail:
+        host: "email-smtp.us-east-2.amazonaws.com"
+        port: "2587"
+        username: "{{ ses_uname }}"
+        password: "{{ ses_passwd }}"
+        secure: starttls
+        to: "{{ admin_email }}"
+        from: "hello@pmpromailer.com"
+        subject: "New server created!"
+        body: |
+          Hello,
+
+          Your server is ready.
+
+          Name: {{ droplet_name }}
