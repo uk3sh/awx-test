@@ -33,6 +33,7 @@
         unique_name: true
         timeout: 500
         user_data: |  
+          #cloud-config
           runcmd:
             - [ sh, -c, "hostnamectl set-hostname {{ region }}" ]
             - [ sh, -c, "wp db reset --yes --path=/var/www/html --allow-root || true" ]
