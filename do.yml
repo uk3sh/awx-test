@@ -5,6 +5,8 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  vars_files:
+    - secrets.yml
 
   vars:
     # Name your droplet however you like
