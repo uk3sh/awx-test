@@ -44,7 +44,7 @@
             - [ bash, -lc, "set -euo pipefail
                 # create restic env file
                 cat > /root/.restic.env <<'EOF'
-                RESTIC_REPOSITORY=\"s3:s3.us-east-2.amazonaws.com/pmpro-restic-test/{{ subdomain }}\"
+                RESTIC_REPOSITORY=\"s3:s3.us-east-2.amazonaws.com/pmpro-restic-test/{{ droplet_name }}\"
                 RESTIC_PASSWORD=\"Qwerty@123\"
                 EOF
                 chmod 600 /root/.restic.env
