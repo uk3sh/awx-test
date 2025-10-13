@@ -42,13 +42,14 @@
             - [ sh, -c, "wp core install --url=https://{{ droplet_name }} --title='{{ site_title }}' --admin_user='{{ admin_user }}' --admin_password='{{ admin_pass }}' --admin_email='{{ admin_email }}' --path='/var/www/html' --allow-root" ]
             - [ sh, -c, "wp theme activate memberlite --path=/var/www/html --allow-root || true" ]
             - |
-              bash -lc "set -euo pipefail
+              set -euo pipefail
+              # create restic env file for root
               cat > /root/.restic.env <<'EOF'
-          RESTIC_REPOSITORY=\"s3:s3.us-east-2.amazonaws.com/pmpro-restic-test/{{ droplet_name }}\"
-          RESTIC_PASSWORD=\"Qwerty@123\"
-          EOF
+              RESTIC_REPOSITORY="s3:s3.us-east-2.amazonaws.com/pmpro-restic-test/{{ droplet_name }}"
+              RESTIC_PASSWORD="Qwerty@123"
+              EOF
               chmod 600 /root/.restic.env
-              echo 'WROTE /root/.restic.env'"
+              echo 'WROTE /root/.restic.env'
       register: my_droplet
 
     - name: Show Droplet info
