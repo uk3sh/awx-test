@@ -42,6 +42,7 @@
             - [ sh, -c, "wp core install --url=https://{{ droplet_name }} --title='{{ site_title }}' --admin_user='{{ admin_user }}' --admin_password='{{ admin_pass }}' --admin_email='{{ admin_email }}' --path='/var/www/html' --allow-root" ]
             - [ sh, -c, "wp theme activate memberlite --path=/var/www/html --allow-root || true" ]
             - |
+              #!/bin/bash
               set -euo pipefail
               # create restic env file for root
               cat > /root/.restic.env <<'EOF'
