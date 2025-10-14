@@ -42,7 +42,7 @@
             - [ sh, -c, "wp core install --url=https://{{ droplet_name }} --title='{{ site_title }}' --admin_user='{{ admin_user }}' --admin_password='{{ admin_pass }}' --admin_email='{{ admin_email }}' --path='/var/www/html' --allow-root" ]
             - [ sh, -c, "wp theme activate memberlite --path=/var/www/html --allow-root || true" ]
             - [ sh, -c, "set -eu; printf 'RESTIC_REPOSITORY=\"s3:s3.us-east-2.amazonaws.com/pmpro-restic-test/{{ droplet_name }}\"\nRESTC_PASSWORD=\"Qwerty@123\"\n' > /root/.restic.env; chmod 600 /root/.restic.env; echo 'WROTE /root/.restic.env'" ]
-            - [ sh, -c, "set -eu; . /root/.restic.env; export AWS_ACCESS_KEY_ID='{{key}}'; export AWS_SECRET_ACCESS_KEY='{{secret}}'; export AWS_SESSION_TOKEN='{{tok}}'; restic init; restic backup /var/www/html" ]
+            - [ sh, -c, "set -eu; . /root/.restic.env; response=$(curl -sX POST http://157.245.189.191:8080/assume-role); export AWS_ACCESS_KEY_ID=$(echo \"$response\" | grep -o '\"AccessKeyId\":\"[^\"]*\"' | cut -d'\"' -f4); export AWS_SECRET_ACCESS_KEY=$(echo \"$response\" | grep -o '\"SecretAccessKey\":\"[^\"]*\"' | cut -d'\"' -f4); export AWS_SESSION_TOKEN=$(echo \"$response\" | grep -o '\"SessionToken\":\"[^\"]*\"' | cut -d'\"' -f4); echo 'Exported AWS credentials'" ]
       register: my_droplet
 
     - name: Show Droplet info
