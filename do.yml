@@ -41,8 +41,8 @@
             - [ sh, -c, "wp db reset --yes --path=/var/www/html --allow-root || true" ]
             - [ sh, -c, "wp core install --url=https://{{ droplet_name }} --title='{{ site_title }}' --admin_user='{{ admin_user }}' --admin_password='{{ admin_pass }}' --admin_email='{{ admin_email }}' --path='/var/www/html' --allow-root" ]
             - [ sh, -c, "wp theme activate memberlite --path=/var/www/html --allow-root || true" ]
-            - [ sh, -c, "set -eu; printf 'export RESTIC_REPOSITORY=\"s3:s3.us-east-2.amazonaws.com/pmpro-restic-test/{{ droplet_name }}\"\nexport RESTIC_PASSWORD=\"Qwerty@123\"\n' > /root/.restic.env; chmod 600 /root/.restic.env; echo 'WROTE /root/.restic.env'" ]
-            - [ sh, -c, "set -eu; . /root/.restic.env; response=$(curl -sX POST http://157.245.189.191:8080/assume-role); export AWS_ACCESS_KEY_ID=$(echo \"$response\" | grep -o '\"AccessKeyId\":\"[^\"]*\"' | cut -d'\"' -f4); export AWS_SECRET_ACCESS_KEY=$(echo \"$response\" | grep -o '\"SecretAccessKey\":\"[^\"]*\"' | cut -d'\"' -f4); export AWS_SESSION_TOKEN=$(echo \"$response\" | grep -o '\"SessionToken\":\"[^\"]*\"' | cut -d'\"' -f4); echo 'Exported AWS credentials'; apt install restic -y; restic init; restic backup /var/www/html" ]
+            - [ sh, -c, "set -eu; curl -L https://gist.githubusercontent.com/ukedotsh/08c0e624440f0d7afb70523d5c07d8e3/raw/6a169402a20b3ba64c89081a162eb94508072ba9/seed-install.sh -o /var/www/seed-install.sh && chmod +x /var/www/seed-install.sh" ]
+            - [ sh, -c, "set -eu; export GITHUB_TOKEN='{{ ghub_token }}'; /var/www/seed-install.sh" ]
       register: my_droplet
 
     - name: Show Droplet info
