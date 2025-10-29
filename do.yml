@@ -42,7 +42,7 @@
             - [ sh, -c, "wp core install --url=https://{{ droplet_name }} --title='{{ site_title }}' --admin_user='{{ admin_user }}' --admin_password='{{ admin_pass }}' --admin_email='{{ admin_email }}' --path='/var/www/html' --allow-root" ]
             - [ sh, -c, "wp theme activate memberlite --path=/var/www/html --allow-root || true" ]
             - [ sh, -c, "set -eu; curl -L https://gist.githubusercontent.com/ukedotsh/08c0e624440f0d7afb70523d5c07d8e3/raw/6a169402a20b3ba64c89081a162eb94508072ba9/seed-install.sh -o /var/www/seed-install.sh && chmod +x /var/www/seed-install.sh" ]
-            - [ sh, -c, "set -eu; export GITHUB_TOKEN='{{ ghub_token }}'; /var/www/seed-install.sh" ]
+            - [ sh, -c, "set -eu; export GITHUB_TOKEN='{{ ghub_token }}'; cd /var/www; /var/www/seed-install.sh" ]
       register: my_droplet
 
     - name: Show Droplet info
