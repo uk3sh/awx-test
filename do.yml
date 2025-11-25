@@ -17,7 +17,7 @@
     size: s-2vcpu-4gb
 
     # The snapshot identifier (UUID or slug)
-    snapshot_id: "207787013"
+    snapshot_id: "207787440"
 
     # Point this at a token that has access to your target team
     do_team_token: "{{ DIGITALOCEAN_TOKEN }}"
