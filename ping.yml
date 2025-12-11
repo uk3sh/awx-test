@@ -3,3 +3,7 @@
   tasks:
     - name: Ping all nodes
       ansible.builtin.ping:
+    - name: Remove package
+      ansible.builtin.apt:
+        name: ftp
+        state: absent
