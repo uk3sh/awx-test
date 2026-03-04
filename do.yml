@@ -32,6 +32,7 @@
         size: "{{ size }}"
         image: "{{ snapshot_id }}"
         ssh_keys: ['48536093']
+        project: "Beta Customers"
         unique_name: true
         timeout: 500
         user_data: |  
@@ -53,7 +54,7 @@
       community.digitalocean.digital_ocean_tag:
         oauth_token: "{{ do_team_token }}"
         resource_id: "{{ my_droplet.data.droplet.id }}"
-        name: "{{ do_tag }}"
+        name: "pmpro-hosting-beta"
         state: present
 
     - name: Create a record using api token
