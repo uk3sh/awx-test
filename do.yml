@@ -38,7 +38,7 @@
         user_data: |  
           #cloud-config
           runcmd:
-             - ["sh", "-c", "git clone https://{{ ghub_token }}@github.com/strangerstudios/pmpro-hosting.git /root/pmpro-hosting && cd /root/pmpro-hosting/server/ansible && ansible-playbook main.yml -e \"wp_url={{ droplet_name }} wp_title='PMPro Site' wp_admin_user={{ admin_user }} wp_admin_email={{ admin_email }} github_token={{ ghub_token }}\""]
+            - ["sh", "-c", "git clone https://{{ ghub_token }}@github.com/strangerstudios/pmpro-hosting.git /root/pmpro-hosting && cd /root/pmpro-hosting/server/ansible && ansible-playbook main.yml -e \"wp_url={{ droplet_name }} wp_title='PMPro Site' wp_admin_user={{ admin_user }} wp_admin_email={{ admin_email }} github_token={{ ghub_token }}\""]
       register: my_droplet
 
     - name: Show Droplet info
